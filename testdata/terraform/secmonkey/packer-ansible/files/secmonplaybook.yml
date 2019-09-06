@@ -1,0 +1,69 @@
+- hosts: all
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: Create log directory
+    file:
+      path: /var/log/security_monkey
+      state: directory
+      group: ubuntu
+      owner: ubuntu
+      mode: 0777
+
+  - name: Create web directory
+    file:
+      path: /var/www
+      state: directory
+      owner: ubuntu
+
+
+
+  - name: Create security monkey source directory
+    file:
+      path: /usr/local/src/security_monkey
+      state: directory
+      group: ubuntu
+      owner: ubuntu
+
+
+  - name: Clone Git repository
+    git:
+      repo: 'https://github.com/Netflix/security_monkey.git'
+      dest: /usr/local/src/security_monkey
+
+
+  - name: Change owner/group of security monkey src directory
+    file:
+      path: /usr/local/src/security_monkey
+      group: ubuntu
+      owner: ubuntu
+      recurse: yes
+
+  - name: Install dependencies in Virtualenv
+    pip:
+      name: ['setuptools', 'pip', 'urllib3[secure]', 'cloudaux[gcp]']
+      extra_args: --upgrade
+      virtualenv: "/usr/local/src/security_monkey/venv"
+      virtualenv_python: python2.7
+    become: no
+
+  - name: Install security monkey in Virtualenv
+    shell: "cd  /usr/local/src/security_monkey && /usr/local/src/security_monkey/venv/bin/python /usr/local/src/security_monkey/setup.py develop"
+    become: no
+
+
+  - name: Get and unarchive Web UI archive
+    unarchive:
+      src: https://github.com/Netflix/security_monkey/releases/download/1.1.2/static.tar.gz
+      dest: /usr/local/src/security_monkey/security_monkey/
+      remote_src: yes
+
+
+  - name: Install Dart
+    command: sh /tmp/setup.sh
+
+  - name: enable supervisor
+    command: systemctl enable supervisor
+
+
