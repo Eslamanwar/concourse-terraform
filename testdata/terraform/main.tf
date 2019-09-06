@@ -21,7 +21,7 @@ module "vpc" {
 }
 
 module "secmonkey" {
-  source = "git::https://github.com/Eslamanwar/secmonkey.git"
+  source = ./secmonkey 
   monkey_name = "secmon"
   environment = "prod"
 
