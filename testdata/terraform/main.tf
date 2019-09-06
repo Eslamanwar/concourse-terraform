@@ -21,7 +21,7 @@ module "vpc" {
 }
 
 module "secmonkey" {
-  source = ./secmonkey 
+  source = secmonkey 
   monkey_name = "secmon"
   environment = "prod"
 
