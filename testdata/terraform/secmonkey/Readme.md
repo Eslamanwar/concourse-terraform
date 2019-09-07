@@ -12,3 +12,6 @@ Building the AMI
 - $ export AWS_PROFILE=secmonkey	// where AWS_PROFILE is the awscli profile with the right credentials
 - $ make
 
+# Design
+![alt text](https://github.com/Eslamanwar/concourse-terraform/blob/master/testdata/terraform/secmonkey/secmonkey.jpg?raw=true)
+
